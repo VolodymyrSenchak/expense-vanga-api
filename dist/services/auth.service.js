@@ -34,6 +34,14 @@ class AuthService {
             return error ? (0, models_1.failure)(error) : (0, models_1.success)(data);
         });
     }
+    refreshToken(refreshToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { data, error } = yield this.db.auth.refreshSession({
+                refresh_token: refreshToken
+            });
+            return error ? (0, models_1.failure)(error) : (0, models_1.success)(data);
+        });
+    }
     getUser(jwt) {
         return __awaiter(this, void 0, void 0, function* () {
             const { data, error } = yield this.db.auth.getUser(jwt);

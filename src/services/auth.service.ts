@@ -33,6 +33,14 @@ export class AuthService {
     return error ? failure(error) : success(data);
   }
 
+  async refreshToken(refreshToken: string): Promise<Result<AuthResult>> {
+    const { data, error } = await this.db.auth.refreshSession({
+      refresh_token: refreshToken
+    });
+
+    return error ? failure(error) : success(data);
+  }
+
   async getUser(jwt: string): Promise<Result<User>> {
     const { data, error } = await this.db.auth.getUser(jwt);
 

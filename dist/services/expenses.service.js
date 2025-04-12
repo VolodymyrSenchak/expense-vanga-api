@@ -16,6 +16,7 @@ class ExpensesService {
     constructor() {
         this.db = (0, supabaseDb_1.getSupabaseClient)();
         this.expectedExpensesTable = 'expected_expenses';
+        this.actualExpensesTable = 'actual_expenses';
     }
     getExpectedExpenses(userId) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -23,15 +24,41 @@ class ExpensesService {
                 .from(this.expectedExpensesTable)
                 .select()
                 .eq('userId', userId);
-            return error ? (0, models_1.failure)(error) : (0, models_1.success)(data[0]);
+            return (0, models_1.fromDbResult)(data[0], error);
         });
     }
     saveExpectedExpenses(expectedExpenses) {
         return __awaiter(this, void 0, void 0, function* () {
             const { error } = yield this.db
                 .from(this.expectedExpensesTable)
-                .insert(expectedExpenses);
-            return error ? (0, models_1.failure)(error) : (0, models_1.success)(true);
+                .upsert(expectedExpenses);
+            return (0, models_1.fromDbResult)(true, error);
+        });
+    }
+    upsertActualExpense(expense) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { error } = yield this.db
+                .from(this.actualExpensesTable)
+                .upsert(expense);
+            return (0, models_1.fromDbResult)(true, error);
+        });
+    }
+    removeActualExpense(userId, date) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { error } = yield this.db
+                .from(this.actualExpensesTable)
+                .delete()
+                .eq('userId', userId).eq('date', date);
+            return (0, models_1.fromDbResult)(true, error);
+        });
+    }
+    getActualExpenses(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { data, error } = yield this.db
+                .from(this.actualExpensesTable)
+                .select()
+                .eq('userId', userId);
+            return (0, models_1.fromDbResult)(data, error);
         });
     }
 }

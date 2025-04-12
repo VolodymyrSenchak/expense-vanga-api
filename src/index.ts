@@ -2,10 +2,11 @@ import express, { Application } from "express";
 import cors from "cors";
 import {useRoutes} from "./routes";
 import {ENV_VARIABLES} from "./utils/envVariables";
+import {getCorsOptions} from "./utils/corsUtils";
 
 const app: Application = express();
 
-app.use(cors({ origin: "http://localhost:8080"}));
+app.use(cors(getCorsOptions()));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 useRoutes(app);

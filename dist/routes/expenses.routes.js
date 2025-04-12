@@ -20,17 +20,34 @@ const validateToken_1 = require("../middlewares/validateToken");
 const requestUtils_1 = require("../utils/requestUtils");
 const useExpensesRoutes = () => {
     const router = (0, express_1.Router)();
+    const expSrv = () => serviceFactory_1.default.getService(expenses_service_1.ExpensesService);
     router.get("/expected", validateToken_1.validateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const authService = serviceFactory_1.default.getService(expenses_service_1.ExpensesService);
-        const result = yield authService.getExpectedExpenses((0, requestUtils_1.getReqContext)(req).user.id);
-        const status = result ? 401 : 200;
-        res.status(status).json(result);
+        const result = yield expSrv().getExpectedExpenses((0, requestUtils_1.getUserId)(req));
+        (0, requestUtils_1.setResResult)(res, result, r => r === null || r === void 0 ? void 0 : r.payload);
     }));
     router.post("/expected", validateToken_1.validateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const authService = serviceFactory_1.default.getService(expenses_service_1.ExpensesService);
-        const result = yield authService.saveExpectedExpenses(Object.assign(Object.assign({}, req.body), { userId: (0, requestUtils_1.getReqContext)(req).user.id }));
-        const status = result ? 401 : 200;
-        res.status(status).json(result);
+        const result = yield expSrv().saveExpectedExpenses({
+            userId: (0, requestUtils_1.getUserId)(req),
+            payload: req.body,
+        });
+        (0, requestUtils_1.setResResult)(res, result);
+    }));
+    router.post("/actual", validateToken_1.validateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const result = yield expSrv().upsertActualExpense({
+            userId: (0, requestUtils_1.getUserId)(req),
+            date: req.body.date,
+            payload: req.body,
+        });
+        (0, requestUtils_1.setResResult)(res, result);
+    }));
+    router.delete("/actual", validateToken_1.validateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const { date } = req.query;
+        const result = yield expSrv().removeActualExpense((0, requestUtils_1.getUserId)(req), date);
+        (0, requestUtils_1.setResResult)(res, result);
+    }));
+    router.get("/actual", validateToken_1.validateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const result = yield expSrv().getActualExpenses((0, requestUtils_1.getUserId)(req));
+        (0, requestUtils_1.setResResult)(res, result, r => r.map(s => s.payload));
     }));
     return router;
 };
