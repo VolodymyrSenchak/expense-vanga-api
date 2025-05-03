@@ -1,5 +1,6 @@
 import {AuthService} from "./auth.service";
 import {ExpensesService} from "./expenses.service";
+import {SavingsService} from "./savings.service";
 
 class ServiceFactory {
   private readonly container = new Map<Function, () => object>();
@@ -7,6 +8,7 @@ class ServiceFactory {
   constructor() {
     this.container.set(AuthService, () => new AuthService());
     this.container.set(ExpensesService, () => new ExpensesService());
+    this.container.set(SavingsService, () => new SavingsService());
   }
 
   getService<T>(service: new (...args: any[]) => T): T {
