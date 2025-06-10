@@ -7,6 +7,17 @@ export interface LoginCommand {
   password: string;
 }
 
+export interface PasswordChangeCommand {
+  email: string;
+  password: string;
+  token: string;
+}
+
+export interface PasswordResetCommand {
+  email: string;
+  redirectTo: string;
+}
+
 export interface AuthResult {
   user: User;
   session: Session;
@@ -45,5 +56,18 @@ export class AuthService {
     const { data, error } = await this.db.auth.getUser(jwt);
 
     return error ? failure(error) : success(data.user);
+  }
+
+  async resetPassword(command: PasswordResetCommand): Promise<Result<{}>> {
+    const { error, data } = await this.db.auth.resetPasswordForEmail(command.email, { redirectTo: command.redirectTo });
+    return error ? failure(error) : success(data);
+  }
+
+  async changePassword(command: PasswordChangeCommand): Promise<Result<{}>> {
+    const { error, data } = await this.db.auth.updateUser({
+      password: command.password
+    });
+
+    return error ? failure(error) : success(data);
   }
 }

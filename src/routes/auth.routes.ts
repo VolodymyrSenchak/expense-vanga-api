@@ -29,5 +29,15 @@ export const useAuthRoutes = () => {
     res.status(200).json(user);
   });
 
+  router.post("/resetPassword", async (req, res) => {
+    const result = await authSrv().resetPassword(req.body);
+    setResResult(res, result);
+  });
+
+  router.get("/changePassword", validateToken, async (req, res) => {
+    const result = await authSrv().changePassword(req.body);
+    setResResult(res, result);
+  });
+
   return router;
 };

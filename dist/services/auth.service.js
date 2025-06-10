@@ -48,6 +48,20 @@ class AuthService {
             return error ? (0, models_1.failure)(error) : (0, models_1.success)(data.user);
         });
     }
+    resetPassword(command) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { error, data } = yield this.db.auth.resetPasswordForEmail(command.email, { redirectTo: command.redirectTo });
+            return error ? (0, models_1.failure)(error) : (0, models_1.success)(data);
+        });
+    }
+    changePassword(command) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { error, data } = yield this.db.auth.updateUser({
+                password: command.password
+            });
+            return error ? (0, models_1.failure)(error) : (0, models_1.success)(data);
+        });
+    }
 }
 exports.AuthService = AuthService;
 //# sourceMappingURL=auth.service.js.map
