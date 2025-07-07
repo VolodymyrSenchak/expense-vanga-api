@@ -17,4 +17,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./actual-expense.model"), exports);
 __exportStar(require("./expected-expenses.model"), exports);
 __exportStar(require("./savings.model"), exports);
+__exportStar(require("./currentMoney.model"), exports);
+__exportStar(require("./currencies.model"), exports);
 //# sourceMappingURL=index.js.map
