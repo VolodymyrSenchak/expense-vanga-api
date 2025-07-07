@@ -1,6 +1,6 @@
 import {getSupabaseClient} from "../utils/supabaseDb";
 import {fromDbResult, Result} from "../models";
-import {Currencies, Savings} from "../models/expenses";
+import {Currencies} from "../models/expenses";
 
 export class CurrenciesService {
   private readonly db = getSupabaseClient();
