@@ -11,6 +11,6 @@ export function useRoutes(app: Application): void {
   app.use("/api/auth", useAuthRoutes());
   app.use("/api/expenses", useExpensesRoutes());
   app.use("/api/savings", useSavingsRoutes());
-  app.use('./api/currencies', useCurrenciesRoutes());
-  app.use('./api/currentMoney', useCurrentMoneyRoutes());
+  app.use('/api/currencies', useCurrenciesRoutes());
+  app.use('/api/currentMoney', useCurrentMoneyRoutes());
 }

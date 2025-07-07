@@ -12,7 +12,7 @@ function useRoutes(app) {
     app.use("/api/auth", (0, auth_routes_1.useAuthRoutes)());
     app.use("/api/expenses", (0, expenses_routes_1.useExpensesRoutes)());
     app.use("/api/savings", (0, savings_routes_1.useSavingsRoutes)());
-    app.use('./api/currencies', (0, currencies_routes_1.useCurrenciesRoutes)());
-    app.use('./api/currentMoney', (0, currentMoney_routes_1.useCurrentMoneyRoutes)());
+    app.use('/api/currencies', (0, currencies_routes_1.useCurrenciesRoutes)());
+    app.use('/api/currentMoney', (0, currentMoney_routes_1.useCurrentMoneyRoutes)());
 }
 //# sourceMappingURL=index.js.map
