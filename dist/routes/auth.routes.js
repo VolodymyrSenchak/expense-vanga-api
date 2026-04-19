@@ -16,6 +16,7 @@ exports.useAuthRoutes = void 0;
 const express_1 = require("express");
 const serviceFactory_1 = __importDefault(require("../services/serviceFactory"));
 const auth_service_1 = require("../services/auth.service");
+const models_1 = require("../models");
 const requestUtils_1 = require("../utils/requestUtils");
 const validateToken_1 = require("../middlewares/validateToken");
 const useAuthRoutes = () => {
@@ -42,8 +43,31 @@ const useAuthRoutes = () => {
         const result = yield authSrv().resetPassword(req.body);
         (0, requestUtils_1.setResResult)(res, result);
     }));
-    router.get("/changePassword", validateToken_1.validateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const result = yield authSrv().changePassword(req.body);
+    router.post("/changePassword", validateToken_1.validateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const { currentPassword, newPassword } = req.body;
+        if (!currentPassword || !newPassword) {
+            (0, requestUtils_1.setResResult)(res, (0, models_1.failure)("currentPassword and newPassword are required", "bad-request"));
+            return;
+        }
+        const user = (0, requestUtils_1.getReqContext)(req).user;
+        const result = yield authSrv().changePassword({
+            userId: (0, requestUtils_1.getUserId)(req),
+            email: user.email,
+            currentPassword,
+            newPassword,
+        });
+        (0, requestUtils_1.setResResult)(res, result);
+    }));
+    router.post("/changePasswordForgotten", validateToken_1.validateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const { newPassword } = req.body;
+        if (!newPassword) {
+            (0, requestUtils_1.setResResult)(res, (0, models_1.failure)("newPassword is required", "bad-request"));
+            return;
+        }
+        const result = yield authSrv().changePasswordForgotten({
+            userId: (0, requestUtils_1.getUserId)(req),
+            newPassword,
+        });
         (0, requestUtils_1.setResResult)(res, result);
     }));
     return router;

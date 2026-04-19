@@ -1,4 +1,4 @@
-import {getSupabaseClient} from "../utils/supabaseDb";
+import {getSupabaseAdminClient, getSupabaseClient} from "../utils/supabaseDb";
 import {failure, Result, success} from "../models";
 import {Session, User} from "@supabase/supabase-js";
 
@@ -8,9 +8,15 @@ export interface LoginCommand {
 }
 
 export interface PasswordChangeCommand {
+  userId: string;
   email: string;
-  password: string;
-  token: string;
+  currentPassword: string;
+  newPassword: string;
+}
+
+export interface PasswordChangeForgottenCommand {
+  userId: string;
+  newPassword: string;
 }
 
 export interface PasswordResetCommand {
@@ -25,6 +31,7 @@ export interface AuthResult {
 
 export class AuthService {
   private readonly db = getSupabaseClient();
+  private readonly adminDb = getSupabaseAdminClient();
 
   async register(command: LoginCommand): Promise<Result<AuthResult>> {
     const { data, error } = await this.db.auth.signUp({
@@ -64,8 +71,25 @@ export class AuthService {
   }
 
   async changePassword(command: PasswordChangeCommand): Promise<Result<{}>> {
-    const { error, data } = await this.db.auth.updateUser({
-      password: command.password
+    const { error: verifyError } = await this.db.auth.signInWithPassword({
+      email: command.email,
+      password: command.currentPassword,
+    });
+
+    if (verifyError) {
+      return failure("Current password is incorrect", "unauthorized");
+    }
+
+    const { error, data } = await this.adminDb.auth.admin.updateUserById(command.userId, {
+      password: command.newPassword,
+    });
+
+    return error ? failure(error) : success(data);
+  }
+
+  async changePasswordForgotten(command: PasswordChangeForgottenCommand): Promise<Result<{}>> {
+    const { error, data } = await this.adminDb.auth.admin.updateUserById(command.userId, {
+      password: command.newPassword,
     });
 
     return error ? failure(error) : success(data);

@@ -1,7 +1,8 @@
 import {Router} from "express";
 import serviceFactory from "../services/serviceFactory";
 import {AuthService} from "../services/auth.service";
-import {getReqContext, setResResult} from "../utils/requestUtils";
+import {failure} from "../models";
+import {getReqContext, getUserId, setResResult} from "../utils/requestUtils";
 import {validateToken} from "../middlewares/validateToken";
 
 export const useAuthRoutes = () => {
@@ -34,8 +35,34 @@ export const useAuthRoutes = () => {
     setResResult(res, result);
   });
 
-  router.get("/changePassword", validateToken, async (req, res) => {
-    const result = await authSrv().changePassword(req.body);
+  router.post("/changePassword", validateToken, async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+      setResResult(res, failure("currentPassword and newPassword are required", "bad-request"));
+      return;
+    }
+
+    const user = getReqContext(req).user;
+    const result = await authSrv().changePassword({
+      userId: getUserId(req),
+      email: user.email,
+      currentPassword,
+      newPassword,
+    });
+    setResResult(res, result);
+  });
+
+  router.post("/changePasswordForgotten", validateToken, async (req, res) => {
+    const { newPassword } = req.body;
+    if (!newPassword) {
+      setResResult(res, failure("newPassword is required", "bad-request"));
+      return;
+    }
+
+    const result = await authSrv().changePasswordForgotten({
+      userId: getUserId(req),
+      newPassword,
+    });
     setResResult(res, result);
   });
 

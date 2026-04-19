@@ -15,6 +15,7 @@ const models_1 = require("../models");
 class AuthService {
     constructor() {
         this.db = (0, supabaseDb_1.getSupabaseClient)();
+        this.adminDb = (0, supabaseDb_1.getSupabaseAdminClient)();
     }
     register(command) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -56,8 +57,23 @@ class AuthService {
     }
     changePassword(command) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { error, data } = yield this.db.auth.updateUser({
-                password: command.password
+            const { error: verifyError } = yield this.db.auth.signInWithPassword({
+                email: command.email,
+                password: command.currentPassword,
+            });
+            if (verifyError) {
+                return (0, models_1.failure)("Current password is incorrect", "unauthorized");
+            }
+            const { error, data } = yield this.adminDb.auth.admin.updateUserById(command.userId, {
+                password: command.newPassword,
+            });
+            return error ? (0, models_1.failure)(error) : (0, models_1.success)(data);
+        });
+    }
+    changePasswordForgotten(command) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { error, data } = yield this.adminDb.auth.admin.updateUserById(command.userId, {
+                password: command.newPassword,
             });
             return error ? (0, models_1.failure)(error) : (0, models_1.success)(data);
         });
