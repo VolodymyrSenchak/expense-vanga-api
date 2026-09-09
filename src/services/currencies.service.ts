@@ -1,9 +1,9 @@
-import {getSupabaseClient} from "../utils/supabaseDb";
+import {getSupabaseAdminClient, getSupabaseClient} from "../utils/supabaseDb";
 import {fromDbResult, Result} from "../models";
 import {Currencies} from "../models/expenses";
 
 export class CurrenciesService {
-  private readonly db = getSupabaseClient();
+  private readonly db = getSupabaseAdminClient();
 
   private readonly currenciesTable = 'currencies';
 

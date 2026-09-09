@@ -14,7 +14,7 @@ const supabaseDb_1 = require("../utils/supabaseDb");
 const models_1 = require("../models");
 class CurrenciesService {
     constructor() {
-        this.db = (0, supabaseDb_1.getSupabaseClient)();
+        this.db = (0, supabaseDb_1.getSupabaseAdminClient)();
         this.currenciesTable = 'currencies';
     }
     getCurrencies(userId) {
