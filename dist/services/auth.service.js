@@ -14,12 +14,11 @@ const supabaseDb_1 = require("../utils/supabaseDb");
 const models_1 = require("../models");
 class AuthService {
     constructor() {
-        this.db = (0, supabaseDb_1.getSupabaseClient)();
         this.adminDb = (0, supabaseDb_1.getSupabaseAdminClient)();
     }
     register(command) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { data, error } = yield this.db.auth.signUp({
+            const { data, error } = yield this.adminDb.auth.signUp({
                 email: command.email,
                 password: command.password,
             });
@@ -28,7 +27,7 @@ class AuthService {
     }
     login(command) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { data, error } = yield this.db.auth.signInWithPassword({
+            const { data, error } = yield this.adminDb.auth.signInWithPassword({
                 email: command.email,
                 password: command.password,
             });
@@ -37,7 +36,7 @@ class AuthService {
     }
     refreshToken(refreshToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { data, error } = yield this.db.auth.refreshSession({
+            const { data, error } = yield this.adminDb.auth.refreshSession({
                 refresh_token: refreshToken
             });
             return error ? (0, models_1.failure)(error) : (0, models_1.success)(data);
@@ -45,19 +44,19 @@ class AuthService {
     }
     getUser(jwt) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { data, error } = yield this.db.auth.getUser(jwt);
+            const { data, error } = yield this.adminDb.auth.getUser(jwt);
             return error ? (0, models_1.failure)(error) : (0, models_1.success)(data.user);
         });
     }
     resetPassword(command) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { error, data } = yield this.db.auth.resetPasswordForEmail(command.email, { redirectTo: command.redirectTo });
+            const { error, data } = yield this.adminDb.auth.resetPasswordForEmail(command.email, { redirectTo: command.redirectTo });
             return error ? (0, models_1.failure)(error) : (0, models_1.success)(data);
         });
     }
     changePassword(command) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { error: verifyError } = yield this.db.auth.signInWithPassword({
+            const { error: verifyError } = yield this.adminDb.auth.signInWithPassword({
                 email: command.email,
                 password: command.currentPassword,
             });

@@ -1,9 +1,9 @@
-import {getSupabaseClient} from "../utils/supabaseDb";
+import {getSupabaseAdminClient} from "../utils/supabaseDb";
 import {fromDbResult, Result} from "../models";
 import {Savings} from "../models/expenses";
 
 export class SavingsService {
-  private readonly db = getSupabaseClient();
+  private readonly db = getSupabaseAdminClient();
 
   private readonly savingsTable = 'savings';
 
@@ -13,7 +13,7 @@ export class SavingsService {
       .select()
       .eq('userId', userId);
 
-    return fromDbResult<Savings>(data[0], error);
+    return fromDbResult<Savings>((data ?? [])[0], error as Error);
   }
 
   async saveSavings(savings: Savings): Promise<Result<boolean>> {
@@ -21,6 +21,6 @@ export class SavingsService {
       .from(this.savingsTable)
       .upsert(savings);
 
-    return fromDbResult(true, error);
+    return fromDbResult(true, error as Error);
   }
 }

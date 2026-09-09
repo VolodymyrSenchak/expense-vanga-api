@@ -23,7 +23,7 @@ class CurrenciesService {
                 .from(this.currenciesTable)
                 .select()
                 .eq('userId', userId);
-            return (0, models_1.fromDbResult)(data[0], error);
+            return (0, models_1.fromDbResult)((data !== null && data !== void 0 ? data : [])[0], error);
         });
     }
     saveCurrencies(savings) {

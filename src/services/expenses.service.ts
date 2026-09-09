@@ -1,9 +1,9 @@
-import {getSupabaseClient} from "../utils/supabaseDb";
+import {getSupabaseAdminClient} from "../utils/supabaseDb";
 import { fromDbResult, Result } from "../models";
 import {ActualExpense, ExpectedExpenses} from "../models/expenses";
 
 export class ExpensesService {
-  private readonly db = getSupabaseClient();
+  private readonly db = getSupabaseAdminClient();
 
   private readonly expectedExpensesTable = 'expected_expenses';
   private readonly actualExpensesTable = 'actual_expenses';
@@ -14,7 +14,7 @@ export class ExpensesService {
       .select()
       .eq('userId', userId);
 
-    return fromDbResult<ExpectedExpenses>(data[0], error);
+    return fromDbResult<ExpectedExpenses>((data ?? [])[0], error as Error);
   }
 
   async saveExpectedExpenses(expectedExpenses: ExpectedExpenses): Promise<Result<boolean>> {
@@ -22,7 +22,7 @@ export class ExpensesService {
       .from(this.expectedExpensesTable)
       .upsert(expectedExpenses);
 
-    return fromDbResult(true, error);
+    return fromDbResult(true, error as Error);
   }
 
   async upsertActualExpense(expense: ActualExpense): Promise<Result<boolean>> {
@@ -30,7 +30,7 @@ export class ExpensesService {
       .from(this.actualExpensesTable)
       .upsert(expense);
 
-    return fromDbResult(true, error);
+    return fromDbResult(true, error as Error);
   }
 
   async removeActualExpense(userId: string, date: string): Promise<Result<boolean>> {
@@ -39,7 +39,7 @@ export class ExpensesService {
       .delete()
       .eq('userId', userId).eq('date', date);
 
-    return fromDbResult(true, error);
+    return fromDbResult(true, error as Error);
   }
 
   async getActualExpenses(userId: string): Promise<Result<ActualExpense[]>> {
@@ -48,6 +48,6 @@ export class ExpensesService {
       .select()
       .eq('userId', userId);
 
-    return fromDbResult<ActualExpense[]>(data, error);
+    return fromDbResult<ActualExpense[]>(data ?? [], error as Error);
   }
 }

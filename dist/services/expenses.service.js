@@ -14,7 +14,7 @@ const supabaseDb_1 = require("../utils/supabaseDb");
 const models_1 = require("../models");
 class ExpensesService {
     constructor() {
-        this.db = (0, supabaseDb_1.getSupabaseClient)();
+        this.db = (0, supabaseDb_1.getSupabaseAdminClient)();
         this.expectedExpensesTable = 'expected_expenses';
         this.actualExpensesTable = 'actual_expenses';
     }
@@ -24,7 +24,7 @@ class ExpensesService {
                 .from(this.expectedExpensesTable)
                 .select()
                 .eq('userId', userId);
-            return (0, models_1.fromDbResult)(data[0], error);
+            return (0, models_1.fromDbResult)((data !== null && data !== void 0 ? data : [])[0], error);
         });
     }
     saveExpectedExpenses(expectedExpenses) {
@@ -58,7 +58,7 @@ class ExpensesService {
                 .from(this.actualExpensesTable)
                 .select()
                 .eq('userId', userId);
-            return (0, models_1.fromDbResult)(data, error);
+            return (0, models_1.fromDbResult)(data !== null && data !== void 0 ? data : [], error);
         });
     }
 }

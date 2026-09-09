@@ -1,4 +1,4 @@
-import {getSupabaseAdminClient, getSupabaseClient} from "../utils/supabaseDb";
+import {getSupabaseAdminClient} from "../utils/supabaseDb";
 import {fromDbResult, Result} from "../models";
 import {Currencies} from "../models/expenses";
 
@@ -13,7 +13,7 @@ export class CurrenciesService {
       .select()
       .eq('userId', userId);
 
-    return fromDbResult<Currencies>(data[0], error);
+    return fromDbResult<Currencies>((data ?? [])[0], error as Error);
   }
 
   async saveCurrencies(savings: Currencies): Promise<Result<boolean>> {
@@ -21,6 +21,6 @@ export class CurrenciesService {
       .from(this.currenciesTable)
       .upsert(savings);
 
-    return fromDbResult(true, error);
+    return fromDbResult(true, error as Error);
   }
 }

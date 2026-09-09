@@ -14,7 +14,7 @@ const supabaseDb_1 = require("../utils/supabaseDb");
 const models_1 = require("../models");
 class SavingsService {
     constructor() {
-        this.db = (0, supabaseDb_1.getSupabaseClient)();
+        this.db = (0, supabaseDb_1.getSupabaseAdminClient)();
         this.savingsTable = 'savings';
     }
     getSavings(userId) {
@@ -23,7 +23,7 @@ class SavingsService {
                 .from(this.savingsTable)
                 .select()
                 .eq('userId', userId);
-            return (0, models_1.fromDbResult)(data[0], error);
+            return (0, models_1.fromDbResult)((data !== null && data !== void 0 ? data : [])[0], error);
         });
     }
     saveSavings(savings) {
