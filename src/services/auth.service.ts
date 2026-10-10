@@ -7,6 +7,12 @@ export interface LoginCommand {
   password: string;
 }
 
+export interface GoogleLoginCommand {
+  idToken: string;
+  nonce?: string;
+  accessToken?: string;
+}
+
 export interface PasswordChangeCommand {
   userId: string;
   email: string;
@@ -45,6 +51,17 @@ export class AuthService {
     const { data, error } = await this.adminDb.auth.signInWithPassword({
       email: command.email,
       password: command.password,
+    });
+
+    return error ? failure(error) : success(data as AuthResult);
+  }
+
+  async loginWithGoogle(command: GoogleLoginCommand): Promise<Result<AuthResult>> {
+    const { data, error } = await this.adminDb.auth.signInWithIdToken({
+      provider: "google",
+      token: command.idToken,
+      nonce: command.nonce,
+      access_token: command.accessToken,
     });
 
     return error ? failure(error) : success(data as AuthResult);

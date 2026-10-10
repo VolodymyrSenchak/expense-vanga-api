@@ -14,6 +14,17 @@ export const useAuthRoutes = () => {
     setResResult(res, result, null, 401);
   });
 
+  router.post("/google", async (req, res) => {
+    const { idToken, nonce, accessToken } = req.body;
+    if (!idToken) {
+      setResResult(res, failure("idToken is required", "bad-request"));
+      return;
+    }
+
+    const result = await authSrv().loginWithGoogle({ idToken, nonce, accessToken });
+    setResResult(res, result, null, 401);
+  });
+
   router.post("/refreshToken", async (req, res) => {
     const { refreshToken } = req.body;
     const result = await authSrv().refreshToken(refreshToken);

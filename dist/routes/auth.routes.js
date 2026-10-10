@@ -26,6 +26,15 @@ const useAuthRoutes = () => {
         const result = yield authSrv().login(req.body);
         (0, requestUtils_1.setResResult)(res, result, null, 401);
     }));
+    router.post("/google", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const { idToken, nonce, accessToken } = req.body;
+        if (!idToken) {
+            (0, requestUtils_1.setResResult)(res, (0, models_1.failure)("idToken is required", "bad-request"));
+            return;
+        }
+        const result = yield authSrv().loginWithGoogle({ idToken, nonce, accessToken });
+        (0, requestUtils_1.setResResult)(res, result, null, 401);
+    }));
     router.post("/refreshToken", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { refreshToken } = req.body;
         const result = yield authSrv().refreshToken(refreshToken);
