@@ -1,6 +1,6 @@
 const allowedOrigins = [
   "http://localhost:4200",
-  "https://expense-vanga-app.vercel.app"
+  "https://expense-vanga.vercel.app"
 ];
 
 
