@@ -2,8 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getCorsOptions = void 0;
 const allowedOrigins = [
-    "http://localhost:4200",
-    "https://expense-vanga.vercel.app",
+    //"http://localhost:4200",
     "https://expense-vanga.vsen.app"
 ];
 const getCorsOptions = () => ({
